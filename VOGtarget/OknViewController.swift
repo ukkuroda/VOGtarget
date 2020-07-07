@@ -9,7 +9,6 @@
 import UIKit
 
 class OknViewController: UIViewController {
-    var timer:Timer!
     var startTime=CFAbsoluteTimeGetCurrent()
     var lastTime=CFAbsoluteTimeGetCurrent()
     var cnt:Int = 0
@@ -26,9 +25,6 @@ class OknViewController: UIViewController {
     
     @IBAction func doubleTap(_ sender: Any) {
         let mainView = storyboard?.instantiateViewController(withIdentifier: "mainView") as! ViewController
-        if timer?.isValid == true {
-            timer.invalidate()
-        }
         if UIApplication.shared.isIdleTimerDisabled == true{
                   UIApplication.shared.isIdleTimerDisabled = false//スリープする
         }
@@ -75,21 +71,22 @@ class OknViewController: UIViewController {
         }
     }
     
+    private var displayLink:CADisplayLink?
+    
     func stopTimer(){
-        if timer?.isValid == true {
-            timer.invalidate()
-        }
+        displayLink?.invalidate()
+        displayLink = nil
         cnt=0
     }
+    
     func setTimer(){
         startTime=CFAbsoluteTimeGetCurrent()
         ww=view.bounds.width
         wh=view.bounds.height
-        let displayLink = CADisplayLink(target: self, selector: #selector(self.update))   //#selector部分については後述
-          displayLink.preferredFramesPerSecond = 120  // FPS設定  //この場合は1秒間に20回
-          displayLink.add(to: RunLoop.current, forMode: RunLoop.Mode.common)
+        displayLink = CADisplayLink(target: self, selector: #selector(self.update))   //#selector部分については後述
+        displayLink?.preferredFramesPerSecond = 120  // FPS設定  //この場合は1秒間に20回
+        displayLink?.add(to: RunLoop.current, forMode: RunLoop.Mode.common)
         
-//        timer = Timer.scheduledTimer(timeInterval: 1.0/120.0, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
         cnt=0
     }
     
@@ -139,7 +136,7 @@ class OknViewController: UIViewController {
             currentSpeed = -Double(speed)
         }
         if cnt%10 == 0 {
-            print("dx:",currentSpeed*dTime,oknSpeed ,oknTime,oknMode)//okpSpeed, "cuSpe:",currentSpeed)
+            print("dx:",currentSpeed*dTime, 1.0 / dTime, oknSpeed ,oknTime, oknMode)//okpSpeed, "cuSpe:",currentSpeed)
         }
         
         var x = lastx + CGFloat(currentSpeed * dTime)
