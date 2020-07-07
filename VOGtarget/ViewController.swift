@@ -145,6 +145,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         getUserDefaults()
         sound(snd:"silence")
         UIApplication.shared.beginReceivingRemoteControlEvents()

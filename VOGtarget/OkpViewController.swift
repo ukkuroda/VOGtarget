@@ -92,9 +92,16 @@ class OkpViewController: UIViewController {
         startTime=CFAbsoluteTimeGetCurrent()
         okpSpeed *= 15
         if okpMode == 0 || okpMode == 2{
-            timer = Timer.scheduledTimer(timeInterval: 1.0/120.0, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
+            let displayLink = CADisplayLink(target: self, selector: #selector(self.update))   //#selector部分については後述
+             displayLink.preferredFramesPerSecond = 120  // FPS設定  //この場合は1秒間に20回
+             displayLink.add(to: RunLoop.current, forMode: RunLoop.Mode.common)
+//            timer = Timer.scheduledTimer(timeInterval: 1.0/120.0, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
         }else{
-            timer = Timer.scheduledTimer(timeInterval: 1.0/120.0, target: self, selector: #selector(self.update1), userInfo: nil, repeats: true)
+            let displayLink = CADisplayLink(target: self, selector: #selector(self.update1))   //#selector部分については後述
+            displayLink.preferredFramesPerSecond = 120  // FPS設定  //この場合は1秒間に20回
+            displayLink.add(to: RunLoop.current, forMode: RunLoop.Mode.common)
+//            let displayLink=CADisplayLink(target:self,selector: #selector(self.update1))
+//            timer = Timer.scheduledTimer(timeInterval: 1.0/120.0, target: self, selector: #selector(self.update1), userInfo: nil, repeats: true)
         }
         if UIApplication.shared.isIdleTimerDisabled == false{
             UIApplication.shared.isIdleTimerDisabled = true//スリープしない
